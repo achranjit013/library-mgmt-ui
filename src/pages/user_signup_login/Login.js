@@ -4,8 +4,11 @@ import { Button, Form } from "react-bootstrap";
 import { CustomInput } from "../../components/custom_inputs/CustomInput";
 import { toast } from "react-toastify";
 import { loginUser } from "../../helper/axiosHelper";
+import { getUserAction } from "./userAction";
+import { useDispatch } from "react-redux";
 
 export const Login = () => {
+  const dispatch = useDispatch();
   const emailRef = useRef("");
   const passwordRef = useRef("");
 
@@ -38,7 +41,18 @@ export const Login = () => {
       return toast.error("Please insert both email and password!");
     }
 
-    const { status, message } = await loginUser({ email, password });
+    const { status, message, jwts } = await loginUser({ email, password });
+
+    if (status === "success") {
+      const { accessJWT, refreshJWT } = jwts;
+      sessionStorage.setItem("accessJWT", accessJWT);
+      localStorage.setItem("refreshJWT", refreshJWT);
+
+      // fetch user info and redirect to dashboard
+      dispatch(getUserAction());
+      return;
+    }
+
     toast[status](message);
   };
 
