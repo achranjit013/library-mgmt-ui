@@ -3,6 +3,7 @@ import { Button, Form } from "react-bootstrap";
 import { CustomInput } from "../../components/custom_inputs/CustomInput";
 import { postAdminUser } from "../../helper/axiosHelper";
 import { toast } from "react-toastify";
+import { useSelector } from "react-redux";
 
 const initialFormState = {
   fname: "",
@@ -14,6 +15,7 @@ const initialFormState = {
 };
 
 export const AdminSignup = () => {
+  const { user } = useSelector((state) => state.adminInfo);
   const inputs = [
     {
       label: "First name",
@@ -71,7 +73,6 @@ export const AdminSignup = () => {
 
   const handleOnSubmit = async (e) => {
     e.preventDefault();
-    console.log(form);
 
     const { confirmPassword, ...rest } = form;
 
@@ -98,10 +99,11 @@ export const AdminSignup = () => {
       progress: undefined,
       theme: "colored",
     });
-
-    // console.log(status);
-    // status === "success" && setForm(initialFormState);
   };
+
+  if (user?.role !== "admin") {
+    return <h1>Unauthorized</h1>;
+  }
 
   return (
     <div className="p-3">

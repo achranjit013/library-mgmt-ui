@@ -1,16 +1,29 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { MainLayout } from "../../components/layouts/MainLayout";
 import { Button, Form } from "react-bootstrap";
 import { CustomInput } from "../../components/custom_inputs/CustomInput";
 import { toast } from "react-toastify";
 import { loginUser } from "../../helper/axiosHelper";
-import { getUserAction } from "./userAction";
-import { useDispatch } from "react-redux";
+import { autoLogin, getUserAction } from "./userAction";
+import { useDispatch, useSelector } from "react-redux";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export const Login = () => {
+  const location = useLocation();
   const dispatch = useDispatch();
   const emailRef = useRef("");
   const passwordRef = useRef("");
+  const navigate = useNavigate();
+
+  const { user } = useSelector((state) => state.adminInfo);
+  const fromLocation =
+    location?.state?.from?.location?.pathname || "/dashboard";
+
+  useEffect(() => {
+    // navigate to dashboard after login successfull
+    user?._id && navigate(fromLocation);
+    !user?._id && dispatch(autoLogin());
+  }, [user?._id, navigate, dispatch]);
 
   const inputs = [
     {

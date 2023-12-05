@@ -1,6 +1,12 @@
 import React from "react";
 import { UserLayout } from "../../components/layouts/UserLayout";
+import { useSelector } from "react-redux";
 
 export const BurrowHistory = () => {
-  return <UserLayout title="Burrow History">BurrowHistory</UserLayout>;
+  const { user } = useSelector((state) => state.adminInfo);
+  return user?.role === "admin" ? (
+    <UserLayout title="Burrow History">BurrowHistory</UserLayout>
+  ) : (
+    <h1>Unauthorized</h1>
+  );
 };

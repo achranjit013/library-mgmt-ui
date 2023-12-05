@@ -7,16 +7,33 @@ const getAccessJWT = () => {
   return sessionStorage.getItem("accessJWT");
 };
 
+const getRefreshJWT = () => {
+  return localStorage.getItem("refreshJWT");
+};
+
 const axiosProcessor = async (obj) => {
-  if (obj.isPrivate) {
+  const { isPrivate, refreshToken } = obj;
+  if (isPrivate) {
     obj.headers = {
-      Authorization: getAccessJWT(),
+      Authorization: refreshToken ? getRefreshJWT() : getAccessJWT(),
     };
   }
+
   try {
     const response = await axios(obj);
     return response.data;
   } catch (error) {
+    const errorMessage = error?.response?.data?.message;
+    if (errorMessage.includes("jwt expired")) {
+      // get new access token
+      const { accessJWT } = await getNewAccessJWT();
+      if (accessJWT) {
+        sessionStorage.setItem("accessJWT", accessJWT);
+      }
+      // continue with previous request
+      return axiosProcessor(obj);
+    }
+
     return {
       status: "error",
       message: error.message,
@@ -40,10 +57,27 @@ export const loginUser = async (data) => {
   });
 };
 
+export const logoutUser = async (data) => {
+  return axiosProcessor({
+    method: "post",
+    url: userEP + "/logout",
+    data,
+  });
+};
+
 export const getUser = async () => {
   return axiosProcessor({
     method: "get",
     url: userEP,
     isPrivate: true,
+  });
+};
+
+export const getNewAccessJWT = async () => {
+  return axiosProcessor({
+    method: "get",
+    url: userEP + "/get-accessjwt",
+    isPrivate: true,
+    refreshToken: true,
   });
 };

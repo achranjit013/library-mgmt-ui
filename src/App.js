@@ -10,23 +10,80 @@ import { Book } from "./pages/book/Book";
 import { Student } from "./pages/student/Student";
 import { BurrowHistory } from "./pages/burrow-history/BurrowHistory";
 import { MyProfile } from "./pages/my-profile/MyProfile";
+import {
+  AdminPrivateRouter,
+  PrivateRouter,
+} from "./components/private-router/PrivateRouter";
+import { MyBooks } from "./pages/my-books/MyBooks";
+import { useEffect } from "react";
 
 function App() {
   return (
     <>
       <Routes>
         {/* public pages */}
-        <Route path="/" element={<Home />}></Route>
-        <Route path="/login" element={<Login />}></Route>
-        <Route path="/signup" element={<Signup />}></Route>
+        <Route path="/" element={<Home />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
 
         {/* private pages */}
-        <Route path="/admin-signup" element={<AdminSignup />}></Route>
-        <Route path="/dashboard" element={<Dashboard />}></Route>
-        <Route path="/books" element={<Book />}></Route>
-        <Route path="/students" element={<Student />}></Route>
-        <Route path="/burrow-history" element={<BurrowHistory />}></Route>
-        <Route path="/my-profile" element={<MyProfile />}></Route>
+
+        <Route
+          path="/admin-signup"
+          element={
+            <PrivateRouter>
+              <AdminSignup />
+            </PrivateRouter>
+          }
+        />
+        <Route
+          path="/dashboard"
+          element={
+            <PrivateRouter>
+              <Dashboard />
+            </PrivateRouter>
+          }
+        />
+        <Route
+          path="/books"
+          element={
+            <PrivateRouter>
+              <Book />
+            </PrivateRouter>
+          }
+        />
+        <Route
+          path="/my-books"
+          element={
+            <PrivateRouter>
+              <MyBooks />
+            </PrivateRouter>
+          }
+        />
+        <Route
+          path="/students"
+          element={
+            <PrivateRouter>
+              <Student />
+            </PrivateRouter>
+          }
+        />
+        <Route
+          path="/burrow-history"
+          element={
+            <PrivateRouter>
+              <BurrowHistory />
+            </PrivateRouter>
+          }
+        />
+        <Route
+          path="/my-profile"
+          element={
+            <PrivateRouter>
+              <MyProfile />
+            </PrivateRouter>
+          }
+        />
       </Routes>
 
       <ToastContainer
