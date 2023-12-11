@@ -14,11 +14,19 @@ export const PrivateRouter = ({ children }) => {
 };
 
 export const AdminPrivateRouter = ({ children }) => {
+  const location = useLocation();
   const { user } = useSelector((state) => state.adminInfo);
 
-  return user?._id ? (
+  // if there is user._id then it means user is logged in.
+  // if user.role===admin, then logged user is admin
+
+  if (user?._id && user?.role !== "admin") {
+    return <h1>Unauthorized</h1>;
+  }
+
+  return user?.role === "admin" ? (
     children
   ) : (
-    <h1>You are not authorized to this resources</h1>
+    <Navigate to="/login" state={{ from: location }} />
   );
 };

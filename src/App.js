@@ -15,9 +15,19 @@ import {
   PrivateRouter,
 } from "./components/private-router/PrivateRouter";
 import { MyBooks } from "./pages/my-books/MyBooks";
+import { NewBook } from "./pages/book/NewBook";
 import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { getAllBookAction } from "./pages/book/bookAction";
+import { UpdateBook } from "./pages/book/UpdateBook";
 
 function App() {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getAllBookAction());
+  }, [dispatch]);
+
   return (
     <>
       <Routes>
@@ -47,9 +57,25 @@ function App() {
         <Route
           path="/books"
           element={
-            <PrivateRouter>
+            <AdminPrivateRouter>
               <Book />
-            </PrivateRouter>
+            </AdminPrivateRouter>
+          }
+        />
+        <Route
+          path="/new-book"
+          element={
+            <AdminPrivateRouter>
+              <NewBook />
+            </AdminPrivateRouter>
+          }
+        />
+        <Route
+          path="/edit-book/:_id"
+          element={
+            <AdminPrivateRouter>
+              <UpdateBook />
+            </AdminPrivateRouter>
           }
         />
         <Route
